@@ -1,4 +1,6 @@
 const Interface = require("./lib/interface");
+const State = require("./lib/state");
+const parser = require("./lib/parser");
 
 /**
  * @name CLI
@@ -9,8 +11,8 @@ const Interface = require("./lib/interface");
 /**
  * Enable POSIX-like short option interface, with attached option values and
  * option strings.
- * @param {CLI} cli
- * @returns {CLI}
+ * @param {Interface} cli
+ * @returns {Interface}
  */
 function shortopts(cli) {
     cli.bind(/^(-[a-z0-9])(.+)$/i, (state, opt, val) => {
@@ -28,8 +30,8 @@ function shortopts(cli) {
 
 /**
  * Enable GNU getopt-like long option interface, with attached option values.
- * @param {CLI} cli
- * @returns {CLI}
+ * @param {Interface} cli
+ * @returns {Interface}
  */
 function longopts(cli) {
     cli.bind(/^(--[a-z][-a-z0-9]*)=(.*)$/i, (state, opt, val) => {
@@ -40,17 +42,21 @@ function longopts(cli) {
 }
 
 /**
- * Create GNU getopt-like command-line interface.
+ * Create GNU getopt-like command-line interface argument parser.
  * @returns {CLI}
  */
 function cli() {
-    var cli = new CLI();
+    var cli = new Interface();
 
     shortopts(cli);
     longopts(cli);
 
-    return cli;
+    return parser(cli);
 }
 
 module.exports = cli;
 module.exports.Interface = Interface;
+module.exports.State = State;
+module.exports.parser = parser;
+module.exports.shortopts = shortopts;
+module.exports.longopts = longopts;
